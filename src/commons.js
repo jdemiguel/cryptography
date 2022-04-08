@@ -115,7 +115,6 @@ module.exports = {
     let limitBinary = '0b'
     for (let index = 0; index < n; index++) limitBinary += '1'
     const limit = BigInt(limitBinary)
-    console.log('limit ' + limit)
     let tentative = this.generateRandom(n);
     const primes = this.getPrimesArray (1000);
     while (tentative < limit)  {
