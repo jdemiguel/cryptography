@@ -35,7 +35,7 @@ describe('Tests Robin-Miller', () => {
   */
 
   it('generatePrimeRandom', async() => {
-    for (let n = 5; n < 1000; n++) {
+    for (let n = 5; n < 100; n++) {
       const primeRandom = commons.generatePrimeRandom(n);
       console.log('valor del primo ' + primeRandom)
       expect(commons.millerRabin(primeRandom, 20)).to.be.true;
