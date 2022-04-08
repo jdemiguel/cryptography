@@ -1,0 +1,19 @@
+{
+  "name": "cryptography",
+  "description": "utilidades criptgraficas",
+  "version": "0.0.1",
+  "private": true,
+  "author": "Jesús de Miguel",
+  "engines": {
+    "node": "14.x.x"
+  },
+  "scripts": {
+    "test": "nyc --reporter=lcov --reporter=text-summary --check-coverage --lines 99 --branches 99 --statements 99 --functions 99 mocha --watch --timeout=10000 test/test.js"
+  },
+  "dependencies": {
+    "chai": "^4.3.6",
+    "mocha": "^9.2.2",
+    "nyc": "^15.1.0"
+  },
+  "devDependencies": {}
+}
