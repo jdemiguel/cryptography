@@ -8,7 +8,6 @@ describe('Tests Robin-Miller', () => {
 
   before(async function() {});
 
-  /*
   it('power', async () => {
     expect(commons.power(2n, 10n, 1000n)).to.be.equals(24n);
     expect(commons.power(2n, 16n, 60000n)).to.be.equals(5536n);
@@ -32,7 +31,6 @@ describe('Tests Robin-Miller', () => {
       index += 1
     })
   });
-  */
 
   it('generatePrimeRandom', async() => {
     for (let n = 5; n < 100; n++) {
