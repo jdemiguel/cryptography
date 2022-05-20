@@ -24,7 +24,7 @@ module.exports = {
    * Utiliza la criba de Erastotenes
    * @param {} n 
    */
-   getPrimesArray: function(n) {
+  getPrimesArray: function(n) {
     const numbers = []
     for (let i = 0; i <= n; i++) numbers.push(true)
     for (let i = 2; i <= n; i++) {
@@ -34,22 +34,22 @@ module.exports = {
 
     }
     return numbers
-  },  
+  },
   /**
    * Comprueba mediante el Test de Miller-Rabin la primalidad del numero n, durante k vueltas
    * @param {*} n bigint
    * @param {*} k number
    */
   millerRabin: function(n, k) {
-    if (n < 6n) return [false, false, true, true, false, true][n]; // valores pequeños provocan comportamiento raro
-    if (n % 2n == 0) return false; //si es par no es primo
+    if (n < BigInt(6)) return [false, false, true, true, false, true][n]; // valores pequeños provocan comportamiento raro
+    if (n % BigInt(2) == 0) return false; //si es par no es primo
     //calculamos d y s tal que n = 2^s * d + 1 (siendo d impar)
 
-    let s = 0n
-    let d =  n - 1n
-    while (d % 2n == 0)  {
-      s += 1n;
-      d = d >> 1n //dividir entre dos de forma binaria
+    let s = BigInt(0)
+    let d = n - BigInt(1)
+    while (d % BigInt(2) == 0) {
+      s += BigInt(1);
+      d = d >> BigInt(1) //dividir entre dos de forma binaria
     }
 
 
@@ -59,8 +59,8 @@ module.exports = {
       if (this.power(a, d, n) == 1) {
         fpp = true
       } else {
-        for (let r = 0n; r <= s && !fpp; r++) {
-          if (n-1n == this.power(a, this.power(2n, r, n) * d, n)) fpp = true;
+        for (let r = BigInt(0); r <= s && !fpp; r++) {
+          if (n - BigInt(1) == this.power(a, this.power(BigInt(2), r, n) * d, n)) fpp = true;
         }
         if (!fpp) return false;
       }
@@ -77,20 +77,20 @@ module.exports = {
    */
   power: function(x, y, p) {
     // Initialize result
-    let res = 1n;
+    let res = BigInt(1);
 
     // Update x if it is more
     // than or equal to p
     x = x % p;
 
-    if (x == 0n) return 0n;
-    while (y > 0n) {
+    if (x == BigInt(0)) return BigInt(0);
+    while (y > BigInt(0)) {
       // If y is odd, multiply
       // x with result
-      if (y % 2n == 1) res = (res * x) % p;
+      if (y % BigInt(2) == 1) res = (res * x) % p;
       // y must be even now
       // y = $y/2
-      y = y >> 1n;
+      y = y >> BigInt(1);
       x = (x * x) % p;
     }
     return res;
@@ -99,7 +99,7 @@ module.exports = {
    * Devuelve un número impar aleatorio de n bits con el más significativo a 1
    * @param {} n 
    */
-  generateRandom: function (n)  {
+  generateRandom: function(n) {
     let binary = '0b1'
     for (let index = 0; index < n - 2; index++) {
       binary += Math.round(Math.random())
@@ -111,17 +111,71 @@ module.exports = {
    * Devuelve un primo aleatorio de n bits con el más significativo a 1, en la práctica será un número entre 2^n-1 y 2^n
    * @param {*} n 
    */
-  generatePrimeRandom: function (n)  {
+  generatePrimeRandom: function(n) {
     let limitBinary = '0b'
     for (let index = 0; index < n; index++) limitBinary += '1'
     const limit = BigInt(limitBinary)
     let tentative = this.generateRandom(n);
-    const primes = this.getPrimesArray (1000);
-    while (tentative < limit)  {
+    const primes = this.getPrimesArray(1000);
+    while (tentative < limit) {
       //if (primes[BigInt.asIntN(32, tentative)]) return tentative;
       if (this.millerRabin(tentative, 20)) return tentative;
-      tentative += 2n;
+      tentative += BigInt(2);
     }
     return this.generatePrimeRandom(n) // si desde el random hasta el final no hay ninguno (porque empieza tarde) se vuelve a lanzar a ver si hay mas suerte
+  },
+
+
+  hexToB64: function(hex) {
+    if (hex.length % 2) { hex = '0' + hex; }
+
+    var bin = [];
+    var i = 0;
+    var d;
+    var b;
+    while (i < hex.length) {
+      d = parseInt(hex.slice(i, i + 2), 16);
+      b = String.fromCharCode(d);
+      bin.push(b);
+      i += 2;
+    }
+
+    return Buffer.from(bin.join('')).toString('base64');
+  },
+
+  stringToHex: function(asciiString) {
+    let hex = '';
+    let tempAscii;
+    asciiString.split('').map(i => {
+      tempAscii = i.charCodeAt(0)
+      hex += tempAscii.toString(16).padStart(2, '0');
+    });
+    return hex;
+  },
+
+  hexToAscii: function(str1) {
+    var hex = str1.toString(16);
+    var str = '';
+    for (var n = 0; n < hex.length; n += 2) {
+      str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+    }
+    return str;
+  },
+
+  /**
+   * 
+   * @param {*} asciiString ASCII text
+   * @returns BigInt
+   */
+  stringToBigInt: function(asciiString) {
+    let bin = '';
+    let tempAscii;
+    asciiString.split('').map(i => {
+      tempAscii = i.charCodeAt(0)
+      bin += tempAscii.toString(2).padStart(8, '0');
+    });
+    return BigInt('0b' + bin);
   }
+
+
 }
