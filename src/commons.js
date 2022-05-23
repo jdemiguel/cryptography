@@ -125,7 +125,12 @@ module.exports = {
     return this.generatePrimeRandom(n) // si desde el random hasta el final no hay ninguno (porque empieza tarde) se vuelve a lanzar a ver si hay mas suerte
   },
 
-
+  circularRotation: function (key, n, length) {
+    const MASK_N = BigInt('0b' + ''.padEnd(length, '1')) //mascara de unos para obtener los primeros bits
+    return ((key << BigInt(n)) & MASK_N) + (key >> BigInt(length - n)) //desplazamos a la izda y enmascaramos lo que desborda. Y aparte sumamos lo que ha desbordado desplazado hasta el inicio
+  },
+  
+  
   hexToB64: function(hex) {
     if (hex.length % 2) { hex = '0' + hex; }
 

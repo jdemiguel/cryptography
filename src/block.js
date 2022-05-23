@@ -9,8 +9,8 @@ module.exports = {
    * @param {*} messsage ASCII string
    */
   process: function(algorithm, key, message, action, mode, iv, format) {
-    const keyLength = (algorithm.KEY_LENGTH / 8)// in BYTES
-    const blockLength = (algorithm.BLOCK_LENGTH / 8)// in BYTES
+    const keyLength = (algorithm.getKeyLength() / 8)// in BYTES
+    const blockLength = (algorithm.getBlockLength() / 8)// in BYTES
     let output = ''
     if (key.length != keyLength) throw (`Key length must be ${keyLength} bytes in ASCII`)
     key = commons.stringToBigInt(key)

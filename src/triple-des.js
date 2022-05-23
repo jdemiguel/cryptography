@@ -1,9 +1,22 @@
 const constants = require('./constants.js')
 const des = require('./des.js')
-
+const KEY_LENGTH = 192;
+const BLOCK_LENGTH = 64;
 module.exports = {
-  KEY_LENGTH: 192, //in bits
-  BLOCK_LENGTH: 64, //in bits
+  /**
+   * get key length in bits
+   * @returns 
+   */
+  getKeyLength: function()  {
+    return KEY_LENGTH
+  },
+  /**
+   * get block length in bits
+   * @returns 
+   */
+  getBlockLength: function()  {
+    return BLOCK_LENGTH
+  },  
   /**
    * 
    * @param {*} key 192 bits BigInt

@@ -1,8 +1,24 @@
 const constants = require('./constants.js')
+const commons = require('./commons.js')
+
+const KEY_LENGTH = 64;
+const BLOCK_LENGTH = 64;
 
 module.exports = {
-  KEY_LENGTH: 64, //in bits
-  BLOCK_LENGTH: 64, //in bits
+  /**
+   * get key length in bits
+   * @returns 
+   */
+  getKeyLength: function()  {
+    return KEY_LENGTH
+  },
+  /**
+   * get block length in bits
+   * @returns 
+   */
+  getBlockLength: function()  {
+    return BLOCK_LENGTH
+  },  
   /**
    * 
    * @param {*} key 64 bits BigInt
@@ -62,17 +78,12 @@ function shiftKey(key, round) {
   const MASK_N = BigInt('0b' + ''.padEnd(28, '1')) //mascara de n unos para obtener los primeros n bits
   let keyLeft = (key >> BigInt(28))
   let keyRight = MASK_N & key
-  keyLeft = circularRotation(keyLeft, bitsRotation[round], 28)
-  keyRight = circularRotation(keyRight, bitsRotation[round], 28)
+  keyLeft = commons.circularRotation(keyLeft, bitsRotation[round], 28)
+  keyRight = commons.circularRotation(keyRight, bitsRotation[round], 28)
   const output = (keyLeft << BigInt(28)) + keyRight
   return output
 }
 
-
-function circularRotation(key, n, length) {
-  const MASK_N = BigInt('0b' + ''.padEnd(length, '1')) //mascara de unos para obtener los primeros bits
-  return ((key << BigInt(n)) & MASK_N) + (key >> BigInt(length - n)) //desplazamos a la izda y enmascaramos lo que desborda. Y aparte sumamos lo que ha desbordado desplazado hasta el inicio
-}
 
 
 /**

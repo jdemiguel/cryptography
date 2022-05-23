@@ -5,6 +5,7 @@ const block = require('../src/block.js')
 const { LFSR } = require('../src/flow.js')
 const chai = require('chai');
 const constants = require('../src/constants.js');
+const aes = require('../src/aes.js')
 const expect = chai.expect;
 
 describe('Tests Robin-Miller', () => {
@@ -403,6 +404,39 @@ describe('Tests Robin-Miller', () => {
       const decrypted = block.process(TRIPLE_DES, key, encrypted, constants.ACTION.DECRYPT, mode, iv, constants.FORMAT.ASCII)
       expect(decrypted.substring(0, n + 1)).to.be.equals(message)
     }
+  });
+
+
+
+
+  it('AES expansion KEYS 128 bits', async() => {
+    let key = BigInt('0x2b7e151628aed2a6abf7158809cf4f3c')
+    let lastResult = 'b6630ca6'
+    aes.setKeyLength(128)
+    const keys = aes.getKeys(key);
+    expect(keys.length).to.be.equals(44)
+    expect(keys[keys.length - 1].toString(16).padStart(8, '0')).to.be.equals(lastResult)
+  });
+
+
+
+  it('AES expansion KEYS 192 bits', async() => {
+    let key = BigInt('0x8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b')
+    let lastResult = '01002202'
+    aes.setKeyLength(192)
+    const keys = aes.getKeys(key);
+    expect(keys.length).to.be.equals(52)
+    expect(keys[keys.length - 1].toString(16).padStart(8, '0')).to.be.equals(lastResult)
+  });
+
+
+  it('AES expansion KEYS 256 bits', async() => {
+    let key = BigInt('0x603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4')
+    let lastResult = '706c631e'
+    aes.setKeyLength(256)
+    const keys = aes.getKeys(key);
+    expect(keys.length).to.be.equals(60)
+    expect(keys[keys.length - 1].toString(16).padStart(8, '0')).to.be.equals(lastResult)
   });
 
 
