@@ -3,34 +3,28 @@ const constants = require('./constants.js')
 
 const MASK_32 = BigInt('0b' + ''.padEnd(32, '1')) //mascara de n unos para obtener los primeros n bits
 const MASK_8 = BigInt('0b' + ''.padEnd(8, '1')) //mascara de n unos para obtener los primeros n bits
-const MASK_2 = BigInt('0b' + ''.padEnd(2, '1')) //mascara de n unos para obtener los primeros n bits
 
 const BLOCK_LENGTH = 128;
-module.exports = {
+
+
+class AES {
+
   /**
    * 
-   * @param {*} keyLength 
+   * @param {*} keyLength  tamaño de clave 128, 192, 256
    */
-  setKeyLength: function(keyLength) {
-    if (keyLength != 128 && keyLength != 192 && keyLength != 256) throw ('La longitud de clave debe ser 128, 192 o 256')
+  constructor(keyLength) {
     this.keyLength = keyLength
     this.nk = keyLength / 32
-  },
-  /**
-   * get key length in bits
-   * @returns 
-   */
-  getKeyLength: function() {
-    if (this.keyLength == null) this.keyLength = 128
-    return this.keyLength
-  },
+  }
+
   /**
    * get block length in bits
    * @returns 
    */
-  getBlockLength: function() {
+  getBlockLength() {
     return BLOCK_LENGTH
-  },
+  }
   /**
    * 
    * @param {*} key 64 bits BigInt
@@ -38,61 +32,74 @@ module.exports = {
    * @param {*} action ENCRYPT/DECRYPT
    * @returns 
    */
-  process: function(key, block, action) {
-    console.log(`key: ${key.toString(16)}`)
-    console.log(`block: ${block.toString(16)}`)
+  process(key, block, action) {
+    if ((key.length * 4) != this.keyLength) throw (`Key length must be ${this.keyLength} bits`)
+    key = BigInt('0x' + key)
 
-    let s = this.toByteArray(block)
+    let s = this.toByteArray(block, 4)
     const keys = this.getKeys(key)
-    printMatrix('Keys', keys)
 
     s = this.addRoundKey(s, keys, 0)
-    printMatrix('INPUT MSG', s)
-    s = this.subBytes(s)
-    printMatrix('INPUT MSG', s)
-    s = this.shiftRows(s)
-    printMatrix('INPUT MSG', s)
-    s = this.mixColumns(s)
-    printMatrix('INPUT MSG', s)
-    for (let round = 0; round < this.nk + 6; round++) { //el numero de rondas es 10, 12, o 14, es decir nk + 6
-
+//    printMatrix('INPUT MSG', s)
+    for (let round = 0; round < this.nk + 6; round++) { //el numero de rondas es 10, 12, o 14, es decir nk + 6     //this.nk + 6
+      s = this.subBytes(s)
+        //printMatrix('OUTPUT subBytes', s)
+      s = this.shiftRows(s)
+        //printMatrix('OUTPUT shiftRows', s)
+      if (round < this.nk + 5) s = this.mixColumns(s) //la ultima ronda no se ejecuta
+        //printMatrix('OUTPUT mixColumns', s)
+      s = this.addRoundKey(s, keys, round + 1)
+//      printMatrix(`OUTPUT ROUND ${round}`, s)
     }
-
-
-    return ''
-  },
-  addRoundKey: function(input, keys, round) {
-    for (let i = 0; i < input.length; i++) {
-      input[i] = input[i] ^ keys[round * input.length + i]
+    let output = ''
+    for (let i = 0; i < 4; i++) {
+      output += s[i].toString(16).padStart(8, '0')
+    }
+    return BigInt('0x' + output)
+  }
+  addRoundKey(input, keys, round) {
+    for (let i = 0; i < 4; i++) {
+      input[i] = input[i] ^ keys[round * 4 + i]
     }
     return input
-  },
-  subBytes: function(input) {
+  }
+  subBytes(input) {
     return input.map(item => this.subWord(item))
-  },
-  shiftRows: function(input) {
-    const output = Array(this.nk).fill(BigInt(0))
-    for (let i = 0; i < this.nk; i++) {
+  }
+  shiftRows(input) {
+    const output = Array(4).fill(BigInt(0))
+    for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
-        console.log((i - 1 + this.nk) % this.nk)
-        output[i] += ((input[((i + j + this.nk) % this.nk)] >> BigInt((3 - j) * 8)) & MASK_8) << BigInt((3 - j) * 8)
+        output[i] += ((input[((i + j + 4) % 4)] >> BigInt((3 - j) * 8)) & MASK_8) << BigInt((3 - j) * 8)
 
       }
     }
     return output
-  },
-  mixColumns: function(input) {
+  }
+  mixColumns(input) {
     const output = []
-    for (let i = 0; i < this.nk; i++) {
-      output[i] = BigInt(0)
+    for (let i = 0; i < 4; i++) {
+      const inputVector = []
+      const outputVector = []
+      inputVector[0] = (input[i] >> BigInt(24)) & MASK_8
+      inputVector[1] = (input[i] >> BigInt(16)) & MASK_8
+      inputVector[2] = (input[i] >> BigInt(8)) & MASK_8
+      inputVector[3] = input[i] & MASK_8
+
       for (let j = 0; j < 4; j++) {
-        output[i] += (BigInt(MIX_COLUMNS[i][3 - j]) * ((input[i] >> BigInt((3 - j)*8))) & MASK_8) << BigInt((3 - j)*8)
+        outputVector[j] =
+          multiplyBytes(MIX_COLUMNS[j][0], inputVector[0]) ^
+          multiplyBytes(MIX_COLUMNS[j][1], inputVector[1]) ^
+          multiplyBytes(MIX_COLUMNS[j][2], inputVector[2]) ^
+          multiplyBytes(MIX_COLUMNS[j][3], inputVector[3])
+
       }
+      output[i] = (outputVector[0] << BigInt(24)) + (outputVector[1] << BigInt(16)) + (outputVector[2] << BigInt(8)) + outputVector[3]
     }
     return output
-  },
-  getKeys: function(key) {
-    const w = this.toByteArray(key)
+  }
+  getKeys(key) {
+    const w = this.toByteArray(key, this.nk)
     for (let i = this.nk; i < 28 + this.nk * 4; i++) {
       let temp = w[i - 1]
       if (i % this.nk == 0) {
@@ -108,46 +115,45 @@ module.exports = {
     }
 
     return w
-  },
+  }
   /**
    * 
    * @param {*} input BigInt
    */
-  rotWord: function(input) {
+  rotWord(input) {
     return commons.circularRotation(input, 8, 32)
-  },
+  }
 
   /**
    * 
    * @param {*} input BigInt
    */
-  subWord: function(input) {
+  subWord(input) {
     let output = BigInt(0)
     for (let index = 3; index >= 0; index--) {
       const tmp = (input >> BigInt(index * 8)) & MASK_8
       output += BigInt(SUBWORD[tmp]) << BigInt(index * 8)
     }
     return output
-  },
+  }
 
-  getRc: function(index) {
+  getRc(index) {
     return BigInt(RC[Math.floor(index / this.nk) - 1]) << BigInt(24)
-  },
-  polynom: function(index, input)  {
-    if (index == 1) return (input << BigInt(1)) + BigInt(1)
-    if (index == 2) return (input << BigInt(1))
-    if (index == 3) return input
-  },
-  toByteArray: function(input) {
+  }
+  toByteArray(input, length) {
     const output = []
-    for (let index = this.nk - 1; index >= 0; index--) {
+    for (let index = length - 1; index >= 0; index--) {
       output.push(((input >> BigInt(index * 32)) & MASK_32))
     }
     return output
-  },
-
-
+  }
 }
+
+
+module.exports = {
+  AES
+}
+
 
 function printMatrix(label, input) {
   console.log('========')
@@ -157,6 +163,14 @@ function printMatrix(label, input) {
     console.log(input[i].toString(16).padStart(8, '0'))
   }
   console.log('========')
+}
+
+function multiplyBytes(a, b) {
+  if (a === 1) return b;
+  if (a === 2 && b <= BigInt(127)) return b << BigInt(1)
+  if (a === 2 && b > BigInt(127)) return (b << BigInt(1)) ^ BigInt('0b100011011')
+  if (a === 3 && b <= BigInt(127)) return (b << BigInt(1)) ^ b
+  if (a === 3 && b > BigInt(127)) return (b << BigInt(1)) ^ BigInt('0b100011011') ^ b
 }
 
 const MIX_COLUMNS = [

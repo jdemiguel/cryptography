@@ -1,20 +1,42 @@
 const commons = require('./commons.js')
 const constants = require('./constants.js')
+const { AES } = require('./aes.js')
+const { DES } = require('./des.js')
+const { TRIPLE_DES } = require('./triple-des.js')
 
 module.exports = {
 
   /**
    * 
-   * @param {*} key 64 bits ASCII string
+   * @param {*} key ASCII string
    * @param {*} messsage ASCII string
    */
-  process: function(algorithm, key, message, action, mode, iv, format) {
-    const keyLength = (algorithm.getKeyLength() / 8)// in BYTES
-    const blockLength = (algorithm.getBlockLength() / 8)// in BYTES
+  process: function(algorithmName, key, message, action, mode, iv, format) {
+    key = commons.stringToHex(key)
+    let algorithm
+    switch (algorithmName) {
+      case constants.ALGORITHMS.AES_128:
+        algorithm = new AES(128)
+        break;
+      case constants.ALGORITHMS.AES_192:
+        algorithm = new AES(192)
+        break;
+      case constants.ALGORITHMS.AES_256:
+        algorithm = new AES(256)
+        break;
+      case constants.ALGORITHMS.DES:
+        algorithm = new DES()
+        break;
+      case constants.ALGORITHMS.TRIPLE_DES:
+        algorithm = new TRIPLE_DES()
+        break;
+      default:
+        throw ('Bad algorithm name')
+        break;
+    }
+    const blockLength = (algorithm.getBlockLength() / 8) // in BYTES
     let output = ''
-    if (key.length != keyLength) throw (`Key length must be ${keyLength} bytes in ASCII`)
-    key = commons.stringToBigInt(key)
-    if (mode !== constants.MODE.ECB && iv.length != blockLength) throw (`IV length must be ${blockLength} bytes in ASCII`)
+    if (mode !== constants.MODE.ECB && iv.length != blockLength) throw (`IV length must be ${algorithm.getBlockLength()} bits`)
     let indexBlock = 0
     const rest = message.length % blockLength
     if (rest > 0) {
@@ -47,7 +69,7 @@ module.exports = {
         case constants.MODE.OFB:
           block = commons.stringToBigInt(message.substr(indexBlock, blockLength))
           const encryptedKey = algorithm.process(key, iv, constants.ACTION.ENCRYPT);
-          cypheredBlock =  encryptedKey ^ block
+          cypheredBlock = encryptedKey ^ block
           iv = encryptedKey
           break;
         case constants.MODE.CTR:
@@ -60,7 +82,7 @@ module.exports = {
           cypheredBlock = algorithm.process(key, block, action)
           break;
       }
-      output += cypheredBlock.toString(16).padStart(16, '0')
+      output += cypheredBlock.toString(16).padStart(blockLength * 2, '0')
       indexBlock += blockLength
     }
     switch (format) {

@@ -4,21 +4,23 @@ const commons = require('./commons.js')
 const KEY_LENGTH = 64;
 const BLOCK_LENGTH = 64;
 
-module.exports = {
+class DES {
+
   /**
-   * get key length in bits
-   * @returns 
+   * 
    */
-  getKeyLength: function()  {
-    return KEY_LENGTH
-  },
+  constructor() {
+    this.keyLength = KEY_LENGTH
+  }
+  
   /**
    * get block length in bits
    * @returns 
    */
-  getBlockLength: function()  {
+  getBlockLength()  {
     return BLOCK_LENGTH
-  },  
+  }
+
   /**
    * 
    * @param {*} key 64 bits BigInt
@@ -26,7 +28,9 @@ module.exports = {
    * @param {*} action ENCRYPT/DECRYPT
    * @returns 
    */
-  process: function(key, block, action) {
+  process(key, block, action) {
+    if (key.length * 4 != 64) throw (`Key length must be 64 bits`)
+    key = BigInt('0x' + key)
     let keys = this.getKeys(key);
     if (action === constants.ACTION.DECRYPT) keys = keys.reverse();
 
@@ -42,8 +46,9 @@ module.exports = {
     let binaryResult = a + (b << BigInt(32))
     binaryResult = applyTable(IP_INV, binaryResult, 64)
     return binaryResult
-  },
-  f: function(key, block) {
+  }
+
+  f(key, block) {
     const expandedBlock = applyTable(expansion, block, 32) ^ key
       //8 cajas
     let output = BigInt(0)
@@ -54,8 +59,9 @@ module.exports = {
       output += BigInt(S_BOXES[box][outer][inner]) << BigInt((7 - box) * 4)
     }
     return applyTable(P, output, 32)
-  },
-  getKeys: function(initialKey) {
+  }
+
+  getKeys(initialKey) {
     const keys = [];
     let key = applyTable(pc1, initialKey, 64)
     for (let round = 0; round < 16; round++) {
@@ -65,6 +71,10 @@ module.exports = {
     }
     return keys
   }
+}
+
+module.exports = {
+  DES
 }
 
 /**

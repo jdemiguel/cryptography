@@ -1,8 +1,5 @@
 const commons = require('./src/commons.js')
 const constants = require('./src/constants.js')
-const DES = require('./src/des.js')
-const AES = require('./src/aes.js')
-const TRIPLE_DES = require('./src/triple-des.js')
 const block = require('./src/block.js')
 const { LFSR } = require('./src/flow.js');
 
@@ -38,11 +35,18 @@ let output, output2
 //const output2 = block.process(DES, 'ABCDDCBA', output, constants.ACTION.DECRYPT, constants.MODE.CTR, 'PEPEPPEE', constants.FORMAT.ASCII);
 console.log(`encrypted 3DES: ${output}`)
 
-AES.setKeyLength(128)
 //output = block.process(AES, commons.hexToAscii('8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b'), 'manda el mensaje', constants.ACTION.ENCRYPT, constants.MODE.ECB, '', constants.FORMAT.HEX);
-output = block.process(AES, commons.hexToAscii('2b7e151628aed2a6abf7158809cf4f3c'), commons.hexToAscii('3243f6a8885a308d313198a2e0370734'), constants.ACTION.ENCRYPT, constants.MODE.ECB, '', constants.FORMAT.HEX);
 
- 
+
+
+output = block.process(constants.ALGORITHMS.AES_128, commons.hexToAscii('000102030405060708090a0b0c0d0e0f'), commons.hexToAscii('00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff'), constants.ACTION.ENCRYPT, constants.MODE.CBC, 'AJKJKJKSJKJJKJKJ', constants.FORMAT.HEX);
+
+
+//output = block.process(constants.ALGORITHMS.AES_192, '000102030405060708090a0b0c0d0e0f1011121314151617', commons.hexToAscii('00112233445566778899aabbccddeeff'), constants.ACTION.ENCRYPT, constants.MODE.ECB, '', constants.FORMAT.HEX);
+
+//output = block.process(constants.ALGORITHMS.AES_256, '000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f', commons.hexToAscii('00112233445566778899aabbccddeeff'), constants.ACTION.ENCRYPT, constants.MODE.ECB, '', constants.FORMAT.HEX);
+
+
 
 console.log(`encrypted AES: ${output}`)
 //console.log(`decrypted: ${output2}`)
