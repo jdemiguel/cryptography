@@ -27,8 +27,8 @@ class AES {
     }
     /**
      * 
-     * @param {*} key 64 bits BigInt
-     * @param {*} block 64 bits BigInt
+     * @param {*} key HEX
+     * @param {*} block 128 bits BigInt
      * @param {*} action ENCRYPT/DECRYPT
      * @returns 
      */
@@ -40,29 +40,19 @@ class AES {
     const keys = this.getKeys(key)
     if (action == constants.ACTION.ENCRYPT) {
       s = this.addRoundKey(s, keys, 0)
-        //    printMatrix('INPUT MSG', s)
       for (let round = 0; round < this.nk + 6; round++) { //el numero de rondas es 10, 12, o 14, es decir nk + 6     //this.nk + 6
         s = this.subBytes(s)
-          //printMatrix('OUTPUT subBytes', s)
         s = this.shiftRows(s)
-          //printMatrix('OUTPUT shiftRows', s)
         if (round < this.nk + 5) s = this.mixColumns(s) //la ultima ronda no se ejecuta
-          //printMatrix('OUTPUT mixColumns', s)
         s = this.addRoundKey(s, keys, round + 1)
-          //      printMatrix(`OUTPUT ROUND ${round}`, s)
       }
     } else {
       s = this.addRoundKey(s, keys, this.nk + 6)
-        //    printMatrix('INPUT MSG', s)
       for (let round = this.nk + 5; round >= 0; round--) { //el numero de rondas es 10, 12, o 14, es decir nk + 6     //this.nk + 6
         s = this.invShiftRows(s)
-          //printMatrix('OUTPUT shiftRows', s)
         s = this.invSubBytes(s)
-          //printMatrix('OUTPUT subBytes', s)
         s = this.addRoundKey(s, keys, round)
-          //printMatrix('OUTPUT addRoundKey', s)
         if (round > 0) s = this.invMixColumns(s) //la ultima ronda no se ejecuta
-          //printMatrix('OUTPUT mixColumns', s)
       }
     }
     let output = ''

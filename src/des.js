@@ -23,7 +23,7 @@ class DES {
 
   /**
    * 
-   * @param {*} key 64 bits BigInt
+   * @param {*} key HEX
    * @param {*} block 64 bits BigInt
    * @param {*} action ENCRYPT/DECRYPT
    * @returns 

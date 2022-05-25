@@ -2,6 +2,7 @@ const commons = require('./src/commons.js')
 const constants = require('./src/constants.js')
 const block = require('./src/block.js')
 const { LFSR } = require('./src/flow.js');
+const { MD5 } = require('./src/md5.js');
 
 //console.log('primes:' + JSON.stringify(commons.getPrimesArray(100)))
 //console.log('primes:' + JSON.stringify(commons.getPrimes(100)))
@@ -40,7 +41,7 @@ console.log(`encrypted 3DES: ${output}`)
 
 
 //output = block.process(constants.ALGORITHMS.AES_128, commons.hexToAscii('000102030405060708090a0b0c0d0e0f'), commons.hexToAscii('00112233445566778899aabbccddeeff'), constants.ACTION.ENCRYPT, constants.MODE.ECB, '', constants.FORMAT.HEX);
-output = block.process(constants.ALGORITHMS.AES_128, commons.hexToAscii('000102030405060708090a0b0c0d0e0f'), commons.hexToAscii('69c4e0d86a7b0430d8cdb78070b4c55a'), constants.ACTION.DECRYPT, constants.MODE.ECB, '', constants.FORMAT.HEX);
+//output = block.process(constants.ALGORITHMS.AES_128, commons.hexToAscii('000102030405060708090a0b0c0d0e0f'), commons.hexToAscii('69c4e0d86a7b0430d8cdb78070b4c55a'), constants.ACTION.DECRYPT, constants.MODE.ECB, '', constants.FORMAT.HEX);
 
 
 //output = block.process(constants.ALGORITHMS.AES_192, '000102030405060708090a0b0c0d0e0f1011121314151617', commons.hexToAscii('00112233445566778899aabbccddeeff'), constants.ACTION.ENCRYPT, constants.MODE.ECB, '', constants.FORMAT.HEX);
@@ -54,6 +55,9 @@ console.log(`encrypted AES: ${output}`)
 
 
 
+const md5 = new MD5();
+
+md5.process(commons.hexToAscii(''.padStart(112, 'f')))
 
 
 
