@@ -39,7 +39,8 @@ console.log(`encrypted 3DES: ${output}`)
 
 
 
-output = block.process(constants.ALGORITHMS.AES_128, commons.hexToAscii('000102030405060708090a0b0c0d0e0f'), commons.hexToAscii('00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff'), constants.ACTION.ENCRYPT, constants.MODE.CBC, 'AJKJKJKSJKJJKJKJ', constants.FORMAT.HEX);
+//output = block.process(constants.ALGORITHMS.AES_128, commons.hexToAscii('000102030405060708090a0b0c0d0e0f'), commons.hexToAscii('00112233445566778899aabbccddeeff'), constants.ACTION.ENCRYPT, constants.MODE.ECB, '', constants.FORMAT.HEX);
+output = block.process(constants.ALGORITHMS.AES_128, commons.hexToAscii('000102030405060708090a0b0c0d0e0f'), commons.hexToAscii('69c4e0d86a7b0430d8cdb78070b4c55a'), constants.ACTION.DECRYPT, constants.MODE.ECB, '', constants.FORMAT.HEX);
 
 
 //output = block.process(constants.ALGORITHMS.AES_192, '000102030405060708090a0b0c0d0e0f1011121314151617', commons.hexToAscii('00112233445566778899aabbccddeeff'), constants.ACTION.ENCRYPT, constants.MODE.ECB, '', constants.FORMAT.HEX);

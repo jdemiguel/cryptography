@@ -502,8 +502,6 @@ describe('Tests Robin-Miller', () => {
     expect(encrypted.toString(16).padStart(16, '0')).to.be.equals(result)
   });
 
-
-
   it('encrypt/decrypt AES ECB VALOR CONOCIDO', async() => {
     const mode = constants.MODE.ECB;
     let message = 'ABCDEFGHIJK1234567890123ABCDEFGHIJK1234567890123ABCDEFGHIJK1234567890123ABCDEFGHIJK1234567890123ABCDEFGHIJK1234567890123'
@@ -523,5 +521,257 @@ describe('Tests Robin-Miller', () => {
     expect(encrypted).to.be.equals(result)
   });
 
+
+
+  it('encrypt/decrypt AES_128 ECB RANDOM', async() => {
+    const mode = constants.MODE.ECB;
+    let message = ''
+    let key = ''
+    for (let n = 0; n < 16; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_128, key, message, constants.ACTION.ENCRYPT, mode, '', constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_128, key, encrypted, constants.ACTION.DECRYPT, mode, '', constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+  it('encrypt/decrypt AES_128 CBC RANDOM', async() => {
+    const mode = constants.MODE.CBC;
+    let message = ''
+    let key = ''
+    let iv = ''
+    for (let n = 0; n < 16; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+      iv += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_128, key, message, constants.ACTION.ENCRYPT, mode, iv, constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_128, key, encrypted, constants.ACTION.DECRYPT, mode, iv, constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+  it('encrypt/decrypt AES_128 CFB RANDOM', async() => {
+    const mode = constants.MODE.CFB;
+    let message = ''
+    let key = ''
+    let iv = ''
+    for (let n = 0; n < 16; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+      iv += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_128, key, message, constants.ACTION.ENCRYPT, mode, iv, constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_128, key, encrypted, constants.ACTION.DECRYPT, mode, iv, constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+  it('encrypt/decrypt AES_128 OFB RANDOM', async() => {
+    const mode = constants.MODE.OFB;
+    let message = ''
+    let key = ''
+    let iv = ''
+    for (let n = 0; n < 16; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+      iv += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_128, key, message, constants.ACTION.ENCRYPT, mode, iv, constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_128, key, encrypted, constants.ACTION.DECRYPT, mode, iv, constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+  it('encrypt/decrypt AES_128 CTR RANDOM', async() => {
+    const mode = constants.MODE.CTR;
+    let message = ''
+    let key = ''
+    let iv = ''
+    for (let n = 0; n < 16; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+      iv += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_128, key, message, constants.ACTION.ENCRYPT, mode, iv, constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_128, key, encrypted, constants.ACTION.DECRYPT, mode, iv, constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+
+
+  it('encrypt/decrypt AES_192 ECB RANDOM', async() => {
+    const mode = constants.MODE.ECB;
+    let message = ''
+    let key = ''
+    for (let n = 0; n < 24; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_192, key, message, constants.ACTION.ENCRYPT, mode, '', constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_192, key, encrypted, constants.ACTION.DECRYPT, mode, '', constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+  it('encrypt/decrypt AES_192 CBC RANDOM', async() => {
+    const mode = constants.MODE.CBC;
+    let message = ''
+    let key = ''
+    let iv = ''
+    for (let n = 0; n < 24; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+      if (n <16) iv += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_192, key, message, constants.ACTION.ENCRYPT, mode, iv, constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_192, key, encrypted, constants.ACTION.DECRYPT, mode, iv, constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+  it('encrypt/decrypt AES_192 CFB RANDOM', async() => {
+    const mode = constants.MODE.CFB;
+    let message = ''
+    let key = ''
+    let iv = ''
+    for (let n = 0; n < 24; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+      if (n <16) iv += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_192, key, message, constants.ACTION.ENCRYPT, mode, iv, constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_192, key, encrypted, constants.ACTION.DECRYPT, mode, iv, constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+  it('encrypt/decrypt AES_192 OFB RANDOM', async() => {
+    const mode = constants.MODE.OFB;
+    let message = ''
+    let key = ''
+    let iv = ''
+    for (let n = 0; n < 24; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+      if (n <16) iv += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_192, key, message, constants.ACTION.ENCRYPT, mode, iv, constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_192, key, encrypted, constants.ACTION.DECRYPT, mode, iv, constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+  it('encrypt/decrypt AES_192 CTR RANDOM', async() => {
+    const mode = constants.MODE.CTR;
+    let message = ''
+    let key = ''
+    let iv = ''
+    for (let n = 0; n < 24; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+      if (n <16) iv += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_192, key, message, constants.ACTION.ENCRYPT, mode, iv, constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_192, key, encrypted, constants.ACTION.DECRYPT, mode, iv, constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+  it('encrypt/decrypt AES_256 ECB RANDOM', async() => {
+    const mode = constants.MODE.ECB;
+    let message = ''
+    let key = ''
+    for (let n = 0; n < 32; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_256, key, message, constants.ACTION.ENCRYPT, mode, '', constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_256, key, encrypted, constants.ACTION.DECRYPT, mode, '', constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+  it('encrypt/decrypt AES_256 CBC RANDOM', async() => {
+    const mode = constants.MODE.CBC;
+    let message = ''
+    let key = ''
+    let iv = ''
+    for (let n = 0; n < 32; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+      if (n <16) iv += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_256, key, message, constants.ACTION.ENCRYPT, mode, iv, constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_256, key, encrypted, constants.ACTION.DECRYPT, mode, iv, constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+  it('encrypt/decrypt AES_256 CFB RANDOM', async() => {
+    const mode = constants.MODE.CFB;
+    let message = ''
+    let key = ''
+    let iv = ''
+    for (let n = 0; n < 32; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+      if (n <16) iv += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_256, key, message, constants.ACTION.ENCRYPT, mode, iv, constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_256, key, encrypted, constants.ACTION.DECRYPT, mode, iv, constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+  it('encrypt/decrypt AES_256 OFB RANDOM', async() => {
+    const mode = constants.MODE.OFB;
+    let message = ''
+    let key = ''
+    let iv = ''
+    for (let n = 0; n < 32; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+      if (n <16) iv += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_256, key, message, constants.ACTION.ENCRYPT, mode, iv, constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_256, key, encrypted, constants.ACTION.DECRYPT, mode, iv, constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
+
+  it('encrypt/decrypt AES_256 CTR RANDOM', async() => {
+    const mode = constants.MODE.CTR;
+    let message = ''
+    let key = ''
+    let iv = ''
+    for (let n = 0; n < 32; n++) {
+      key += String.fromCharCode(Math.floor(Math.random() * 256))
+      if (n <16) iv += String.fromCharCode(Math.floor(Math.random() * 256))
+    }
+    for (let n = 0; n < 200; n++) {
+      message += String.fromCharCode(Math.floor(Math.random() * 256))
+      const encrypted = block.process(constants.ALGORITHMS.AES_256, key, message, constants.ACTION.ENCRYPT, mode, iv, constants.FORMAT.ASCII);
+      const decrypted = block.process(constants.ALGORITHMS.AES_256, key, encrypted, constants.ACTION.DECRYPT, mode, iv, constants.FORMAT.ASCII)
+      expect(decrypted.substring(0, n + 1)).to.be.equals(message)
+    }
+  });
 
 });
