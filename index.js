@@ -57,7 +57,7 @@ console.log(`encrypted AES: ${output}`)
 
 const md5 = new MD5();
 
-md5.process(commons.hexToAscii(''.padStart(112, 'f')))
+md5.process('They are deterministic')//commons.hexToAscii(''.padStart(1, '8')))
 
 
 

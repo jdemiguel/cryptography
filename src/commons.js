@@ -125,12 +125,12 @@ module.exports = {
     return this.generatePrimeRandom(n) // si desde el random hasta el final no hay ninguno (porque empieza tarde) se vuelve a lanzar a ver si hay mas suerte
   },
 
-  circularRotation: function (key, n, length) {
+  circularRotation: function(key, n, length) {
     const MASK_N = BigInt('0b' + ''.padEnd(length, '1')) //mascara de unos para obtener los primeros bits
     return ((key << BigInt(n)) & MASK_N) + (key >> BigInt(length - n)) //desplazamos a la izda y enmascaramos lo que desborda. Y aparte sumamos lo que ha desbordado desplazado hasta el inicio
   },
-  
-  
+
+
   hexToB64: function(hex) {
     if (hex.length % 2) { hex = '0' + hex; }
 
@@ -148,15 +148,7 @@ module.exports = {
     return Buffer.from(bin.join('')).toString('base64');
   },
 
-  stringToHex: function(asciiString) {
-    let hex = '';
-    let tempAscii;
-    asciiString.split('').map(i => {
-      tempAscii = i.charCodeAt(0)
-      hex += tempAscii.toString(16).padStart(2, '0');
-    });
-    return hex;
-  },
+
 
   hexToAscii: function(str1) {
     var hex = str1.toString(16);
@@ -172,7 +164,27 @@ module.exports = {
    * @param {*} asciiString ASCII text
    * @returns BigInt
    */
-  stringToBigInt: function(asciiString) {
+  stringToBinary: function(asciiString) {
+    const length = asciiString.length * 8 //8 bits por caracater
+    return this.stringToBigInt(asciiString).toString(2).padStart(length, '0');
+  },
+
+  /**
+   * 
+   * @param {*} asciiString ASCII text
+   * @returns BigInt
+   */
+   stringToHex: function(asciiString) {
+    const length = asciiString.length * 2 //2 hexadecimal digits por caracter
+    return this.stringToBigInt(asciiString).toString(16).padStart(length, '0');
+  },  
+
+  /**
+   * 
+   * @param {*} asciiString ASCII text
+   * @returns BigInt
+   */
+   stringToBigInt: function(asciiString) {
     let bin = '';
     let tempAscii;
     asciiString.split('').map(i => {
